@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <linearGradient id="gRed" x1="0" x2="1">
+      <stop offset="0%" stop-color="#ff3b3b" />
+      <stop offset="60%" stop-color="#ff1a1a" />
+      <stop offset="100%" stop-color="#c00a35" />
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="18" result="b" />
+      <feMerge>
+        <feMergeNode in="b" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="transparent" />
+
+  <!-- main V-shape, stylized wings -->
+  <g transform="translate(0,40)">
+    <path d="M120 60 C 260 40 360 260 600 420 C 840 260 940 40 1080 60 L960 40 C 820 30 720 210 600 350 C 480 210 380 30 240 40 Z"
+          fill="url(#gRed)" opacity="0.98" filter="url(#glow)"/>
+
+    <!-- center sharper chevron -->
+    <path d="M420 220 L600 380 L780 220 C 660 300 540 300 420 220 Z" fill="#ff6b6b" opacity="0.95" filter="url(#glow)"/>
+
+    <!-- inner core -->
+    <path d="M560 300 L600 260 L640 300 L600 340 Z" fill="#ffb3b3" opacity="0.9" />
+  </g>
+
+</svg>

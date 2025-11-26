@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <g fill="none" stroke="#00a2ff" stroke-width="6" stroke-linecap="round">
+    <circle cx="100" cy="100" r="40" stroke-opacity="0.9" />
+    <!-- simple gear teeth -->
+    <path d="M100 10 L108 36 M100 190 L92 164 M10 100 L36 108 M190 100 L164 92 M30 30 L54 54 M170 170 L146 146 M30 170 L54 146 M170 30 L146 54" stroke-opacity="0.35" />
+  </g>
+</svg>
