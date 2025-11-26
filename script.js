@@ -114,7 +114,7 @@ const App = (() => {
       'GEASS PROTOCOL... ENGAGED',
       'NERV SYNC........ ONLINE',
       '> SYSTEM READY',
-      '> Привет! Я разработчик, дизайнер и техно-энтузиаст.'
+      '> Привет! Я goggi, это мое био.'
     ];
     // type one by one
     for (let m of messages){
