@@ -1,6 +1,7 @@
 // Модульная структура: все функции в этом модуле
 const App = (() => {
   const state = {};
+  state.parallaxDisabled = false;
 
   // Audio: lazy AudioContext + simple synths for "geass" and click feedback
   function initAudio(){
@@ -106,36 +107,23 @@ const App = (() => {
     const lines = document.getElementById('terminalLines');
     const cursor = document.getElementById('terminalCursor');
     if (!lines) return;
+    // final terminal sequence: stop after these lines (no infinite loop)
     const messages = [
       'CPU.............. READY',
       'GPU.............. READY',
       'MEMORY........... READY',
       'NETWORK.......... READY',
-      'GEASS PROTOCOL... ENGAGED',
-      'NERV SYNC........ ONLINE',
       '> SYSTEM READY',
-      '> Сап васап! Я goggi, это мое био.'
+      '> Hi! Я goggi, это мое био.',
+      '> SYNCHRONIZATION ACTIVE',
+      '> PROTOCOL MONITORING'
     ];
-    // type one by one
+
+    // type messages one by one and then stop
     for (let m of messages){
       await typeLine(lines, m);
-      await sleep(250 + Math.random()*400);
+      await sleep(200 + Math.random()*300);
     }
-
-    // периодические системные сообщения в стиле ULTRAKILL
-    (async function loopSys(){
-      const sys = [
-        '> SYNCHRONIZATION ACTIVE',
-        '> PROTOCOL MONITORING',
-        '> SYSTEMS OPERATIONAL',
-        '> AWAITING INPUT'
-      ];
-      while(true){
-        await sleep(5000 + Math.random()*3000);
-        await typeLine(lines, sys[Math.floor(Math.random()*sys.length)], true);
-        await sleep(600);
-      }
-    })();
 
     // helper
     async function typeLine(container, text, short=false){
@@ -167,25 +155,27 @@ const App = (() => {
     const gear = document.getElementById('logoGear');
     if (!hero || !gear) return;
     hero.addEventListener('mousemove', (e)=>{
+      if (state.parallaxDisabled) return;
       const r = hero.getBoundingClientRect();
       const x = (e.clientX - r.left)/r.width - 0.5;
       const y = (e.clientY - r.top)/r.height - 0.5;
-      gear.style.transform = `translate3d(${x*8}px, ${y*6}px, 0) rotate(${x*12}deg)`;
+      // apply only translate for parallax; rotation is handled by inner rotator to avoid transform conflicts
+      gear.style.transform = `translate3d(${x*8}px, ${y*6}px, 0)`;
     });
-    hero.addEventListener('mouseleave', ()=>{gear.style.transform='translate3d(0,0,0) rotate(0)'});
+    hero.addEventListener('mouseleave', ()=>{gear.style.transform='translate3d(0,0,0)'});
+
+    // disable parallax while user hovers over the logo to avoid jerky interactions
+    gear.addEventListener('mouseenter', ()=>{ state.parallaxDisabled = true; });
+    gear.addEventListener('mouseleave', ()=>{ state.parallaxDisabled = false; });
   }
 
   // Непрерывная анимация шестерни
   function initGearRotation(){
+    // Disable continuous rotation: keep logo static
     const gearImg = document.querySelector('#logoGear img');
     if (!gearImg) return;
-    let angle = 0;
-    function step(){
-      angle += 0.12; // slow rotation
-      gearImg.style.transform = `translate(-50%,-50%) rotate(${angle}deg)`;
-      requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
+    // ensure it's positioned correctly but not rotated
+    gearImg.style.transform = '';
   }
 
   // Социальные ссылки — места для вставки реальных URL
@@ -221,7 +211,54 @@ const App = (() => {
     initGearRotation();
     initSocials();
     initInteractions();
+    initPageTransitions();
+    initMatrixBackground();
   }
+
+  // Matrix-style falling code background using a full-screen canvas
+  function initMatrixBackground(){
+    // disable on small screens to save battery
+    if (window.innerWidth < 600) return;
+    const canvas = document.createElement('canvas');
+    canvas.id = 'matrixCanvas';
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let fontSize = 14;
+    let columns;
+    let drops = [];
+
+    function resize(){
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      fontSize = Math.max(12, Math.floor(width / 120));
+      columns = Math.floor(width / fontSize);
+      drops = new Array(columns).fill(1);
+    }
+
+    const chars = '01';
+
+    function draw(){
+      // translucent black to slowly fade previous frame
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = 'rgba(0, 255, 120, 0.9)';
+      ctx.font = fontSize + 'px monospace';
+      for (let i = 0; i < columns; i++){
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+      raf = requestAnimationFrame(draw);
+    }
+
+    let raf;
+    resize();
+    window.addEventListener('resize', ()=>{ cancelAnimationFrame(raf); resize(); });
+    draw();
+  }
+  
 
   // Плавная прокрутка (fallback, если native behavior не работает)
   function smoothScrollTo(targetY, duration = 650){
@@ -278,6 +315,33 @@ const App = (() => {
         playSound('click');
       });
     });
+  }
+
+  // Simple page transition: fade out on internal navigation, then follow link
+  function initPageTransitions(){
+    // enter animation
+    try{
+      document.body.style.opacity = '0';
+      requestAnimationFrame(()=>{
+        document.body.style.transition = 'opacity 260ms ease';
+        document.body.style.opacity = '1';
+      });
+    }catch(e){/* ignore */}
+
+    document.addEventListener('click', (ev)=>{
+      const a = ev.target.closest('a');
+      if (!a) return;
+      const href = a.getAttribute('href') || '';
+      // skip hashes, external links, targets that open new tabs and mailto/tel
+      if (!href || href.startsWith('#') || a.target === '_blank' || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      const url = new URL(href, location);
+      if (url.origin !== location.origin) return; // external
+      ev.preventDefault();
+      // fade out then navigate
+      document.body.style.transition = 'opacity 260ms ease';
+      document.body.style.opacity = '0';
+      setTimeout(()=>{ location.href = url.href; }, 260);
+    }, false);
   }
 
   return {init};

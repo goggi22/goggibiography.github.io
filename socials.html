@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ссылки — goggi</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Стили для фиксированного футера */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 70vh;
+    }
+    
+    .socials {
+      text-align: center;
+      width: 100%;
+      margin-top: 10vh;
+    }
+    
+    .social-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .back-button-container {
+      text-align: left;
+      margin-top: 2rem;
+      width: 200px;
+      margin-left: calc(50% - 400px);
+    }
+    
+    .site-footer {
+      margin-top: auto;
+    }
+    
+    /* Стили для бегущей строки */
+    .marquee {
+      overflow: hidden;
+      white-space: nowrap;
+      box-sizing: border-box;
+    }
+    
+    .marquee-track {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee 20s linear infinite;
+    }
+    
+    @keyframes marquee {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo-wrap" id="logoWrap" aria-hidden="true">
+      <div class="logo-rotator">
+        <img src="assets/geass2.webp" alt="Geass emblem" class="logo logo-custom" />
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a href="index.html#hero">Home</a>
+      <a href="about.html">About me</a>
+      <a href="socials.html">Ссылки</a>
+    </nav>
+  </header>
+  
+  <main>
+    <section class="socials container" style="padding:4rem 0;">
+      <h2>links</h2>
+      <ul class="social-list">
+        <li><a class="social" href="https://t.me/goggisnajpep" data-service="telegram" target="_blank" rel="noopener">Telegram</a></li>
+        <li><a class="social" href="https://steamcommunity.com/id/goggisnajpep/" data-service="steam" target="_blank" rel="noopener">Steam</a></li>
+        <li><a class="social" href="https://www.youtube.com/@ex3m22" data-service="youtube" target="_blank" rel="noopener">YouTube</a></li>
+        
+        <li><a class="social" href="https://github.com/goggi22" data-service="github" target="_blank" rel="noopener">GitHub</a></li>
+      </ul>
+
+      <div class="back-button-container">
+        <a class="btn" href="index.html#hero">← назад</a>
+      </div>
+    </section>
+  </main>
+    
+  <footer class="site-footer">
+    <div class="marquee">
+      <div class="marquee-track">SYSTEM: AUTHORIZED — Яна - ВладыЧественности - • GOGGI • БОГДАН • КУЗ • АКУЛА • КИБЕР • КСПИЛЬ • ДРУКИ • SYNCHRONIZED</div>
+    </div>
+    <p>&copy; experimental bio</p>
+  </footer>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>

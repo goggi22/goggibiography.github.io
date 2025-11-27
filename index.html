@@ -10,12 +10,14 @@
   <header class="site-header">
     <div class="logo-wrap" id="logoWrap" aria-hidden="true">
       <!-- header logo (geass2.webp) -->
-      <img src="assets/geass2.webp" alt="Geass emblem" class="logo logo-custom" />
+      <div class="logo-rotator">
+        <img src="assets/geass2.webp" alt="Geass emblem" class="logo logo-custom" />
+      </div>
     </div>
     <nav class="main-nav">
       <a href="#hero">Home</a>
-      <a href="#about">About me</a>
-      <a href="#socials">Ссылки</a>
+      <a href="about.html">About me</a>
+      <a href="socials.html">Ссылки</a>
     </nav>
   </header>
 
@@ -23,63 +25,38 @@
     <section id="hero" class="hero">
       <div class="hero-grid">
         <div class="hero-left">
-          <h1 class="title"><span class="geass">goggi</span> • <span class="nerv">гогги</span></h1>
-          <p class="subtitle">???</p>
+          <h1 class="title"><span class="geass">                      goggi</span> • <span class="nerv">       гогги</span></h1>
+          <p class="subtitle">bio</p>
 
-          <div class="terminal" id="terminal" aria-live="polite">
-            <div class="terminal-lines" id="terminalLines"></div>
-            <div class="terminal-cursor" id="terminalCursor">▌</div>
-          </div>
-
-          <a class="btn" href="#about">Узнать больше</a>
-        </div>
-
-        <div class="hero-right">
-          <div class="logo-gear" id="logoGear">
-            <!-- теперь отображается растровый NERV (nerv2.webp) -->
-            <div class="nerv-wrap">
-              <img src="assets/nerv2.webp" alt="NERV emblem" class="nerv-badge" />
+          <div class="terminal-area">
+            <div class="terminal" id="terminal" aria-live="polite">
+              <div class="terminal-lines" id="terminalLines"></div>
+              <div class="terminal-cursor" id="terminalCursor">▌</div>
             </div>
+
+            <div class="logo-gear" id="logoGear" aria-hidden="true">
+                <div class="nerv-wrap">
+                  <div class="nerv-rotator">
+                    <img src="assets/bogdan_stepan.jpg" alt="Bogdan Stepan" class="nerv-badge" />
+                  </div>
+                </div>
+              </div>
           </div>
+
+          <a class="btn" href="about.html">Узнать больше</a>
         </div>
+
+        <!-- hero-right removed; logo moved next to terminal inside hero-left -->
       </div>
     </section>
-
-    <section id="about" class="about">
-      <div class="container">
-        <h2>nothing</h2>
-        <p class="typewriter" data-text="Я — гогги, хочу стать разработчиком JavaScript, мне 15 лет. Вдохновленные аниме-культурой и промышленной эстетикой.">
-          <!-- typewriter will populate -->
-        </p>
-
-        <div class="cards">
-          <article class="card reveal">Dota - 1730+- hours</article>
-          <article class="card reveal">Counter-Strike - 1000+- hours</article>
-          <article class="card reveal">Terraria - 200+- hours</article>
-        </div>
-      </div>
-    </section>
-
-    <section id="socials" class="socials">
-      <div class="container">
-        <h2>links</h2>
-        <p></p>
-        <ul class="social-list">
-          <li><a class="social" href="https://t.me/goggisnajpep" data-service="telegram" target="_blank" rel="noopener">Telegram</a></li>
-          <li><a class="social" href="https://steamcommunity.com/id/goggisnajpep/" data-service="steam" target="_blank" rel="noopener">Steam</a></li>
-          <li><a class="social" href="https://www.youtube.com/@ex3m22" data-service="youtube" target="_blank" rel="noopener">YouTube</a></li>
-          <li><a class="social" href="https://www.twitch.tv/gogagiga29" data-service="twitch" target="_blank" rel="noopener">Twitch</a></li>
-          <li><a class="social" href="https://github.com/goggi22" data-service="github" target="_blank" rel="noopener">GitHub</a></li>
-        </ul>
-      </div>
-    </section>
+    <!-- Links moved to socials.html -->
   </main>
 
   <footer class="site-footer">
     <div class="marquee">
-      <div class="marquee-track">SYSTEM: AUTHORIZED — READY • GOGGI • #ILOVEHALLOWEEN • SYNCHRONIZE</div>
+      <div class="marquee-track">SYSTEM: AUTHORIZED — Яна - ВладыЧественности - • GOGGI • БОГДАН • КУЗ • АКУЛА • КИБЕР • КСПИЛЬ • ДРУКИ • SYNCHRONIZED</div>
     </div>
-    <p>&copy; <span id="year"></span> goggi biography — experimental bio</p>
+      <p>&copy; experimental bio</p>
   </footer>
 
   <script type="module" src="script.js"></script>

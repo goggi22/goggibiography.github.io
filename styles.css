@@ -1,12 +1,13 @@
 :root{
-  --bg:#0a0a0a;
-  --deep-violet:#2d1b69;
-  --blood-red:#c00a35;
-  --neon-green:#00ff87;
-  --electric-blue:#00a2ff;
-  --muted:#9aa0a6;
-  --glass: rgba(255,255,255,0.04);
-  --accent: var(--electric-blue);
+  --bg:#040604;
+  /* make palette green-centric and saturated */
+  --deep-violet:#072813; /* reused for deep headings but now deep green */
+  --blood-red:#0b6623; /* kept but greenish for accents where used */
+  --neon-green:#00ff58; /* bright saturated green */
+  --electric-blue:var(--neon-green);
+  --muted:#8adfa9; /* muted green for secondary text */
+  --glass: rgba(0,255,120,0.03);
+  --accent: var(--neon-green);
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
   --font-sans: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
@@ -18,23 +19,25 @@ html{scroll-behavior:smooth}
 body{
   margin:0;
   font-family:var(--font-sans);
-  background: radial-gradient(ellipse at 10% 10%, rgba(45,27,105,0.12), transparent 10%),
+  background: radial-gradient(ellipse at 10% 10%, rgba(10,40,20,0.12), transparent 10%),
               linear-gradient(180deg, rgba(0,0,0,0.6), rgba(10,10,10,1));
-  color:#e6eef8;
+  color:var(--neon-green);
   background-color:var(--bg);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
   line-height:1.4;
+  /* globally increase saturation for a more vivid look */
+  filter: saturate(1.22) contrast(1.06);
 }
 
 .container{max-width:1100px;margin:0 auto;padding:2rem}
 
 /* Header */
 .site-header{
-  display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;position:sticky;top:0;background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);z-index:40;border-bottom:1px solid rgba(255,255,255,0.03)
+  display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;position:sticky;top:0;background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent);z-index:40;border-bottom:1px solid rgba(0,0,0,0.06)
 }
-.logo{height:64px;filter:drop-shadow(0 8px 32px rgba(192,10,53,0.12));transition:transform 320ms ease,filter 320ms ease}
-.logo:hover{transform:translateY(-2px) scale(1.02);filter:drop-shadow(0 12px 40px rgba(192,10,53,0.22))}
+.logo{height:64px;filter:drop-shadow(0 8px 32px rgba(0,255,120,0.12));transition:transform 320ms ease,filter 320ms ease}
+.logo:hover{transform:translateY(-2px) scale(1.02);filter:drop-shadow(0 12px 40px rgba(0,255,120,0.22))}
 .logo-custom{width:110px;height:auto;object-fit:contain}
 .logo-wrap{background:transparent}
 /* Сделать фон логотипов прозрачным (если изображение поддерживает прозрачность) */
@@ -46,40 +49,63 @@ body{
 /* styling for inline SVG wrappers to control sizes */
 .logo-custom-svg svg{width:110px;height:auto;display:block}
 .nerv-svg{width:280px;height:auto;display:block}
-.main-nav a{color:var(--muted);margin-left:1rem;text-decoration:none;font-weight:600}
-.main-nav a:hover{color:var(--electric-blue);text-shadow:0 0 10px rgba(0,162,255,0.15)}
+.main-nav a{color:var(--muted);margin-left:1rem;text-decoration:none;font-weight:700}
+.main-nav a:hover{color:var(--neon-green);text-shadow:0 0 18px rgba(0,255,120,0.18)}
 
 /* Hero */
 .hero{padding:6rem 0;position:relative;overflow:hidden}
 .hero-grid{display:grid;grid-template-columns:1fr 420px;gap:2rem;align-items:center}
-.title{font-family:var(--font-mono);font-size:2.6rem;margin:0;color:var(--deep-violet)}
+.title{font-family:var(--font-mono);font-size:2.6rem;margin:0;color:var(--neon-green)}
 .title .geass{letter-spacing:0.08em}
 .subtitle{color:var(--muted);margin:0.5rem 0 1.5rem}
 
-.terminal{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:1rem;border-radius:8px;border:1px solid rgba(255,255,255,0.03);font-family:var(--font-mono);color:var(--neon-green);min-height:5rem;position:relative;overflow:hidden}
+.terminal{background:linear-gradient(180deg, rgba(0,255,140,0.03), rgba(0,0,0,0.02));padding:1rem;border-radius:8px;border:1px solid rgba(0,255,120,0.06);font-family:var(--font-mono);color:var(--neon-green);min-height:5rem;position:relative;overflow:hidden}
 .terminal-lines{white-space:pre-wrap;min-height:3rem}
 .terminal-cursor{position:absolute;right:1rem;bottom:1rem;color:var(--neon-green);opacity:1;animation:blink 1s steps(2, start) infinite}
 
-.btn{display:inline-block;margin-top:1rem;padding:0.6rem 1rem;border-radius:6px;background:linear-gradient(90deg,var(--electric-blue),var(--neon-green));color:#001; font-weight:700;text-decoration:none;box-shadow:0 8px 30px rgba(0,162,255,0.06);transition:all 300ms ease-in-out}
-.btn:hover{transform:translateY(-4px);filter:drop-shadow(0 10px 30px rgba(0,255,135,0.08))}
+.btn{display:inline-block;margin-top:1rem;padding:0.6rem 1rem;border-radius:6px;background:linear-gradient(90deg,var(--neon-green),#0f6b2f);color:#001; font-weight:700;text-decoration:none;box-shadow:0 10px 40px rgba(0,255,120,0.09);transition:transform 450ms cubic-bezier(.2,.9,.2,.95),filter 300ms}
+.btn:hover{transform:translateY(-4px) rotate(-1.8deg);filter:drop-shadow(0 16px 48px rgba(0,255,120,0.18))}
 
 .hero-right{display:flex;justify-content:center}
 .logo-gear{position:relative;width:320px;height:320px}
 .logo-gear{position:relative;width:340px;height:340px;display:flex;align-items:center;justify-content:center}
 .logo-gear img{max-width:100%;height:auto;display:block}
-.nerv-badge{width:280px;filter:drop-shadow(0 18px 40px rgba(192,10,53,0.14));transition:transform 420ms ease,filter 420ms ease}
-.nerv-badge:hover{transform:translateY(-6px) scale(1.02);filter:drop-shadow(0 28px 60px rgba(192,10,53,0.26))}
-
-/* micro animation: slow pulse glow */
-.nerv-badge{animation:badgePulse 4.6s ease-in-out infinite}
-@keyframes badgePulse{
-  0%{filter:drop-shadow(0 12px 28px rgba(192,10,53,0.10))}
-  50%{filter:drop-shadow(0 32px 80px rgba(192,10,53,0.22)); transform:translateY(-2px) scale(1.01)}
-  100%{filter:drop-shadow(0 12px 28px rgba(192,10,53,0.10)); transform:none}
+/* model-viewer element styling: reuse nerv-badge styles so behavior is consistent */
+.nerv-badge{width:280px;filter:drop-shadow(0 12px 28px rgba(0,255,120,0.12));transition:transform 220ms ease,filter 220ms ease,box-shadow 220ms ease,opacity 220ms ease}
+/* лёгкое hover-поднятие и небольшой мерцающий эффект вместо яркой пульсации */
+.nerv-badge:hover{transform:translateY(-3px);filter:drop-shadow(0 20px 45px rgba(0,255,120,0.18))}
+.nerv-badge{animation:gentlePulse 4.8s ease-in-out infinite}
+@keyframes gentlePulse{
+  0%{opacity:0.97;box-shadow:0 10px 24px rgba(0,255,120,0.06)}
+  50%{opacity:1;box-shadow:0 18px 48px rgba(0,255,120,0.10)}
+  100%{opacity:0.97;box-shadow:0 10px 24px rgba(0,255,120,0.06)}
 }
+
+/* rocking animation when hovering the logo */
+@keyframes rock {
+  0% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+  100% { transform: rotate(-2deg); }
+}
+
+/* ensure rotation origin is centered */
+.nerv-badge{transform-origin:center center}
 
 /* Смещение hero-контента вправо, чтобы элементы не были слишком близко к левому краю */
 .hero-left, .hero-right{transition:transform 0.6s ease-in-out}
+/* terminal area: terminal + logo placed side-by-side */
+.terminal-area{display:flex;align-items:center;gap:1rem}
+.terminal-area .terminal{flex:1;min-width:220px}
+.terminal-area .logo-gear{width:160px;height:160px;display:flex;align-items:center;justify-content:center}
+.terminal-area .logo-gear .nerv-badge{width:120px}
+
+/* .nerv-rotator contains the img; rotate the inner element on hover so outer .logo-gear transform (parallax) is preserved */
+.nerv-rotator img{display:block;transition:transform 1200ms cubic-bezier(.2,.9,.2,.95);transform-origin:center center}
+.nerv-rotator:hover img{animation:rock 1.6s ease-in-out infinite}
+
+/* header logo rotator */
+.logo-rotator img{display:block;transition:transform 1100ms cubic-bezier(.2,.9,.2,.95);transform-origin:center center}
+.logo-rotator:hover img{animation:rock 1.4s ease-in-out infinite}
 @media (min-width:880px){
   /* сдвигаем левую колонку вправо на процент от ширины экрана */
   .hero-left{transform:translateX(6vw)}
@@ -109,10 +135,18 @@ body{
 /* Footer */
 .site-footer{padding:1.2rem 2rem;border-top:1px solid rgba(255,255,255,0.03);color:var(--muted);position:relative;background:linear-gradient(180deg, transparent, rgba(0,0,0,0.4))}
 .marquee{overflow:hidden;background:rgba(255,255,255,0.01);border-radius:4px;margin-bottom:0.6rem}
-.marquee-track{display:inline-block;padding:0.6rem 1rem;white-space:nowrap;color:var(--blood-red);animation:marquee 12s linear infinite}
+.marquee-track{display:inline-block;padding:0.6rem 1rem;white-space:nowrap;color:var(--neon-green);animation:marquee 12s linear infinite;will-change:transform}
 
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+/* Move the track from fully off the right edge to fully off the left edge, then restart */
+@keyframes marquee{
+  0%{transform:translateX(100%)}
+  100%{transform:translateX(-100%)}
+}
 @keyframes blink{50%{opacity:0}}
+
+/* Matrix background canvas sits behind content; content layers get higher z-index */
+#matrixCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.site-header,.site-footer,main{position:relative;z-index:1}
 
 /* small screens */
 @media (max-width:880px){
