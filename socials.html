@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>links</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css" />
   <style>
     /* Стили для фиксированного футера */
@@ -44,6 +45,76 @@
       flex-wrap: wrap;
     }
     
+    .social {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: transparent;
+      font-size: 24px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border: 2px solid #00ff41; /* Вернул обводку */
+    }
+
+    /* Только логотипы зеленые в стиле матрицы */
+    .social[data-service="telegram"] {
+      color: #00ff41;
+      text-shadow: 0 0 3px #00ff41;
+    }
+    
+    .social[data-service="steam"] {
+      color: #00ff41;
+      text-shadow: 0 0 3px #00ff41;
+    }
+    
+    .social[data-service="youtube"] {
+      color: #00ff41;
+      text-shadow: 0 0 3px #00ff41;
+    }
+    
+    .social[data-service="github"] {
+      color: #00ff41;
+      text-shadow: 0 0 3px #00ff41;
+    }
+    
+    .social:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    /* Цвета для разных соцсетей при наведении */
+    .social[data-service="telegram"]:hover {
+      background-color: #0088cc;
+      color: white;
+      text-shadow: none;
+      border-color: #0088cc;
+    }
+    
+    .social[data-service="steam"]:hover {
+      background-color: #000000;
+      color: white;
+      text-shadow: none;
+      border-color: #000000;
+    }
+    
+    .social[data-service="youtube"]:hover {
+      background-color: #ff0000;
+      color: white;
+      text-shadow: none;
+      border-color: #ff0000;
+    }
+    
+    .social[data-service="github"]:hover {
+      background-color: #333333;
+      color: white;
+      text-shadow: none;
+      border-color: #333333;
+    }
+    
     .back-button-container {
       text-align: left;
       margin-top: 2rem;
@@ -76,6 +147,15 @@
         transform: translateX(-100%);
       }
     }
+    
+    /* Стили для гифки */
+    .links-gif {
+      display: block;
+      margin: 0 auto 1rem auto;
+      max-width: 200px;
+      height: auto;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -86,21 +166,38 @@
       </div>
     </div>
     <nav class="main-nav">
-      <a href="index.html#hero">Home</a>
-      <a href="about.html">About me</a>
+      <a href="index.html#hero">Главная</a>
+      <a href="about.html">Обо мне</a>
       <a href="socials.html">Ссылки</a>
     </nav>
   </header>
   
   <main>
     <section class="socials container" style="padding:4rem 0;">
+      <!-- Добавлена гифка над надписью links -->
+      <img src="/assets/cc.gif" alt="Animated decoration" class="links-gif">
       <h2>links</h2>
       <ul class="social-list">
-        <li><a class="social" href="https://t.me/goggisnajpep" data-service="telegram" target="_blank" rel="noopener">Telegram</a></li>
-        <li><a class="social" href="https://steamcommunity.com/id/goggisnajpep/" data-service="steam" target="_blank" rel="noopener">Steam</a></li>
-        <li><a class="social" href="https://www.youtube.com/@ex3m22" data-service="youtube" target="_blank" rel="noopener">YouTube</a></li>
-        
-        <li><a class="social" href="https://github.com/goggi22" data-service="github" target="_blank" rel="noopener">GitHub</a></li>
+        <li>
+          <a class="social" href="https://t.me/goggisnajpep" data-service="telegram" target="_blank" rel="noopener" aria-label="Telegram">
+            <i class="fab fa-telegram"></i>
+          </a>
+        </li>
+        <li>
+          <a class="social" href="https://steamcommunity.com/id/goggisnajpep/" data-service="steam" target="_blank" rel="noopener" aria-label="Steam">
+            <i class="fab fa-steam"></i>
+          </a>
+        </li>
+        <li>
+          <a class="social" href="https://www.youtube.com/@ex3m22" data-service="youtube" target="_blank" rel="noopener" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+        </li>
+        <li>
+          <a class="social" href="https://github.com/goggi22" data-service="github" target="_blank" rel="noopener" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
       </ul>
 
       <div class="back-button-container">
