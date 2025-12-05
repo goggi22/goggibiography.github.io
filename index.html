@@ -3,62 +3,115 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>home</title>
+  <title>goggi bio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Дополнительные стили для SPA */
+    .page-content {
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .main-nav a.active {
+      color: var(--neon-green) !important;
+      text-shadow: 0 0 10px rgba(0, 255, 120, 0.4);
+      position: relative;
+    }
+    
+    .main-nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--neon-green);
+      box-shadow: 0 0 8px rgba(0, 255, 120, 0.6);
+    }
+    
+    /* Адаптивность для плеера */
+    @media (max-width: 768px) {
+      .audio-player-container {
+        width: calc(100% - 40px);
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto;
+      }
+    }
+    
+    /* Стиль для логотипа в шапке */
+    .logo-custom {
+      transition: transform 0.3s ease;
+    }
+    
+    .logo-custom:hover {
+      transform: rotate(15deg);
+    }
+  </style>
 </head>
 <body>
+  <!-- Шапка сайта -->
   <header class="site-header">
-    <div class="logo-wrap" id="logoWrap" aria-hidden="true">
-      <!-- header logo (geass2.webp) -->
+    <div class="logo-wrap" id="logoWrap">
       <div class="logo-rotator">
-        <img src="assets/geass2.webp" alt="Geass emblem" class="logo logo-custom" />
+        <a href="#" data-page="home" class="logo-link">
+          <img src="assets/geass2.webp" alt="Geass emblem" class="logo logo-custom" />
+        </a>
       </div>
     </div>
     <nav class="main-nav">
-      <a href="#hero">Главная</a>
-      <a href="about.html">Обо мне</a>
-      <a href="socials.html">Ссылки</a>
+      <a href="#" data-page="home" class="active">Главная</a>
+      <a href="#" data-page="about">Обо мне</a>
+      <a href="#" data-page="socials">Ссылки</a>
     </nav>
   </header>
 
-  <main>
-    <section id="hero" class="hero">
-      <div class="hero-grid">
-        <div class="hero-left">
-          <h1 class="title"><span class="geass">goggi</span> • <span class="nerv">гогги</span></h1>
-          <p class="subtitle">bio</p>
-
-          <div class="terminal-area">
-            <div class="terminal" id="terminal" aria-live="polite">
-              <div class="terminal-lines" id="terminalLines"></div>
-              <div class="terminal-cursor" id="terminalCursor">▌</div>
-            </div>
-
-            <div class="logo-gear" id="logoGear" aria-hidden="true">
-                <div class="nerv-wrap">
-                  <div class="nerv-rotator">
-                    <img src="assets/bogdan_stepan.jpg" alt="Bogdan Stepan" class="nerv-badge" />
-                  </div>
-                </div>
-              </div>
-          </div>
-
-          <a class="btn" href="about.html">Узнать больше</a>
-        </div>
-
-        <!-- hero-right removed; logo moved next to terminal inside hero-left -->
-      </div>
-    </section>
-    <!-- Links moved to socials.html -->
+  <!-- Основной контент (меняется динамически) -->
+  <main id="main-content">
+    <!-- Контент загружается здесь через JavaScript -->
   </main>
 
+  <!-- Футер -->
   <footer class="site-footer">
     <div class="marquee">
       <div class="marquee-track">SYSTEM: AUTHORIZED — Яна - ВладыЧественности - • GOGGI • БОГДАН • КУЗ • АКУЛА • КИБЕР • КСПИЛЬ • ДРУКИ • SYNCHRONIZED</div>
     </div>
-      <p>&copy; experimental bio</p>
+    <p>&copy; experimental bio • <span id="currentYear"></span></p>
   </footer>
 
-  <script type="module" src="script.js"></script>
+  <!-- Аудиоплеер (постоянно висит внизу) -->
+  <div class="audio-player-container">
+    <h3><i class="fas fa-music"></i> AURA.MP3</h3>
+    
+    <div class="player-controls">
+      <button class="play-btn" id="playAuraBtn">
+        <i class="fas fa-play"></i>
+      </button>
+      
+      <div class="progress-container" id="auraProgressContainer">
+        <div class="progress-bar" id="auraProgress"></div>
+      </div>
+      
+      <div class="time-display" id="auraTime">0:00 / 0:00</div>
+    </div>
+    
+    <div class="volume-control">
+      <i class="fas fa-volume-up"></i>
+      <input type="range" class="volume-slider" id="auraVolume" 
+       min="0" max="1" step="0.01" value="0.3">
+    </div>
+  </div>
+
+  <!-- Аудио элемент (один на всё приложение) -->
+  <audio id="auraAudio" src="assets/aura.mp3" preload="auto" loop></audio>
+
+  <!-- Подключение скрипта SPA -->
+  <script type="module" src="spa-script.js"></script>
 </body>
 </html>

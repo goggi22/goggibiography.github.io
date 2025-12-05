@@ -214,5 +214,46 @@
   </footer>
 
   <script type="module" src="script.js"></script>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>links</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ... существующие стили ... */
+  </style>
+</head>
+<body>
+  <!-- ... существующий код ... -->
+
+  <!-- Audio Player -->
+  <div class="audio-player-container">
+    <h3><i class="fas fa-music"></i> AURA.MP3</h3>
+    
+    <div class="player-controls">
+      <button class="play-btn" id="playAuraBtn">
+        <i class="fas fa-play"></i>
+      </button>
+      
+      <div class="progress-container" id="auraProgressContainer">
+        <div class="progress-bar" id="auraProgress"></div>
+      </div>
+      
+      <div class="time-display" id="auraTime">0:00 / 0:00</div>
+    </div>
+    
+    <div class="volume-control">
+      <i class="fas fa-volume-up"></i>
+      <input type="range" class="volume-slider" id="auraVolume" 
+             min="0" max="1" step="0.01" value="0.7">
+    </div>
+  </div>
+
+  <audio id="auraAudio" src="assets/aura.mp3" preload="metadata"></audio>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>

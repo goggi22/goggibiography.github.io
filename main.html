@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>goggi bio</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Стили для SPA контента */
+    .page-content {
+      min-height: 70vh;
+      opacity: 1;
+      transition: opacity 300ms ease;
+    }
+    
+    .page-content.hidden {
+      display: none;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo-wrap" id="logoWrap" aria-hidden="true">
+      <div class="logo-rotator">
+        <img src="assets/geass2.webp" alt="Geass emblem" class="logo logo-custom" />
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a href="#" data-page="home">Главная</a>
+      <a href="#" data-page="about">Обо мне</a>
+      <a href="#" data-page="socials">Ссылки</a>
+    </nav>
+  </header>
+
+  <main id="main-content">
+    <!-- Контент будет загружаться здесь динамически -->
+  </main>
+
+  <!-- Audio Player -->
+  <div class="audio-player-container">
+    <h3><i class="fas fa-music"></i> AURA.MP3</h3>
+    
+    <div class="player-controls">
+      <button class="play-btn" id="playAuraBtn">
+        <i class="fas fa-play"></i>
+      </button>
+      
+      <div class="progress-container" id="auraProgressContainer">
+        <div class="progress-bar" id="auraProgress"></div>
+      </div>
+      
+      <div class="time-display" id="auraTime">0:00 / 0:00</div>
+    </div>
+    
+    <div class="volume-control">
+      <i class="fas fa-volume-up"></i>
+      <input type="range" class="volume-slider" id="auraVolume" 
+             min="0" max="1" step="0.01" value="0.7">
+    </div>
+  </div>
+
+  <audio id="auraAudio" src="assets/aura.mp3" preload="auto"></audio>
+
+  <!-- Шаблоны для SPA -->
+  <template id="home-template">
+    <section id="hero" class="hero">
+      <div class="hero-grid">
+        <div class="hero-left">
+          <h1 class="title"><span class="geass">goggi</span> • <span class="nerv">гогги</span></h1>
+          <p class="subtitle">bio</p>
+
+          <div class="terminal-area">
+            <div class="terminal" id="terminal" aria-live="polite">
+              <div class="terminal-lines" id="terminalLines"></div>
+              <div class="terminal-cursor" id="terminalCursor">▌</div>
+            </div>
+
+            <div class="logo-gear" id="logoGear" aria-hidden="true">
+                <div class="nerv-wrap">
+                  <div class="nerv-rotator">
+                    <img src="assets/bogdan_stepan.jpg" alt="Bogdan Stepan" class="nerv-badge" />
+                  </div>
+                </div>
+              </div>
+          </div>
+
+          <a class="btn" href="#" data-page="about">Узнать больше</a>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <template id="about-template">
+    <section class="about container" style="padding:4rem 0;">
+      <h2>about</h2>
+      <p class="typewriter" data-text="Я — гогги, хочу стать разработчиком JavaScript, мне 15 лет. Вдохновляюсь аниме-культурой и промышленной эстетикой."></p>
+
+      <div class="cards">
+        <article class="card reveal">CSS</article>
+        <article class="card reveal">HTML</article>
+        <article class="card reveal">JAVASCRIPT</article>
+      </div>
+
+      <p style="margin-top:2rem;"><a class="btn" href="#" data-page="home">← назад</a></p>
+    </section>
+  </template>
+
+  <template id="socials-template">
+    <section class="socials container" style="padding:4rem 0;">
+      <img src="assets/cc.gif" alt="Animated decoration" class="links-gif">
+      <h2>links</h2>
+      <ul class="social-list">
+        <li>
+          <a class="social" href="https://t.me/avalleywithoutwind" data-service="telegram" target="_blank" rel="noopener" aria-label="Telegram">
+            <i class="fab fa-telegram"></i>
+          </a>
+        </li>
+        <li>
+          <a class="social" href="https://steamcommunity.com/id/goggisnajpep/" data-service="steam" target="_blank" rel="noopener" aria-label="Steam">
+            <i class="fab fa-steam"></i>
+          </a>
+        </li>
+        <li>
+          <a class="social" href="https://www.youtube.com/@ex3m22" data-service="youtube" target="_blank" rel="noopener" aria-label="YouTube">
+            <i class="fab fa-youtube"></i>
+          </a>
+        </li>
+        <li>
+          <a class="social" href="https://github.com/goggi22" data-service="github" target="_blank" rel="noopener" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+        </li>
+      </ul>
+
+      <div class="back-button-container">
+        <a class="btn" href="#" data-page="home">← назад</a>
+      </div>
+    </section>
+  </template>
+
+  <footer class="site-footer">
+    <div class="marquee">
+      <div class="marquee-track">SYSTEM: AUTHORIZED — Яна - ВладыЧественности - • GOGGI • БОГДАН • КУЗ • АКУЛА • КИБЕР • КСПИЛЬ • ДРУКИ • SYNCHRONIZED</div>
+    </div>
+    <p>&copy; experimental bio</p>
+  </footer>
+
+  <script type="module" src="spa-script.js"></script>
+</body>
+</html>
