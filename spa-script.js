@@ -732,4 +732,42 @@ document.addEventListener("touchmove", e => {
 
 document.addEventListener("touchend", endDrag);
 
+// === АВТО-ПРИЖАТИЕ ФУТЕРА ДЛЯ СПА ===
+
+// Эта функция заставляет футер опускаться в самый низ окна
+function adjustFooter() {
+    const main = document.getElementById("main-content");
+
+    // доп. защита: если контента мало — растягиваем блок
+    main.style.minHeight = "calc(100vh - 120px)";
+}
+
+// Событие, которое SPA вызывает каждый раз при загрузке новой страницы
+document.addEventListener("spa-page-loaded", adjustFooter);
+
+// === НАСТОЯЩИЙ FIX: автоматическая обёртка в .page-content ===
+
+// ПАТЧИМ твою функцию загрузки страниц
+// (если в spa-script.js у тебя есть loadPage(pageName), то мы её перехватываем)
+const originalLoadPage = window.loadPage;
+
+if (originalLoadPage) {
+    window.loadPage = async function(page) {
+        await originalLoadPage(page);
+
+        // оборачиваем загруженный HTML в .page-content
+        const main = document.getElementById("main-content");
+        if (!main.querySelector(".page-content")) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "page-content";
+            wrapper.innerHTML = main.innerHTML;
+            main.innerHTML = "";
+            main.appendChild(wrapper);
+        }
+
+        // вызываем событие, чтобы футер встал на место
+        document.dispatchEvent(new Event("spa-page-loaded"));
+    };
+}
+
 

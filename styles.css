@@ -373,3 +373,25 @@ body{
 .audio-player-container.dragging {
     transition: none;
 }
+/* === ГЛОБАЛЬНЫЙ FLEX-КОНТЕЙНЕР ДЛЯ ПРИЖАТИЯ ФУТЕРА === */
+
+/* body получает класс layout-root (мы уже это сделали в index.html) */
+.layout-root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* main занимает всё пространство между шапкой и футером */
+#main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Контейнеры страниц внутри SPA */
+.page-content {
+    flex: 1; /* растягивает страницу, чтобы футер не прыгал */
+    display: flex;
+    flex-direction: column;
+}
