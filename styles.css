@@ -359,3 +359,17 @@ body{
   text-align: center;
   margin-top: 40px;
 }
+/* cursor */
+.audio-player-container {
+    cursor: grab;
+}
+
+.audio-player-container.dragging {
+    cursor: grabbing;
+}
+.audio-player-container {
+    transition: transform 0.25s ease;
+}
+.audio-player-container.dragging {
+    transition: none;
+}

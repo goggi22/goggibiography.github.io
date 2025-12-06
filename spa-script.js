@@ -15,7 +15,6 @@ const SPA = (() => {
       '> SYSTEM READY',
       '> Hi! Я goggi, это мое био.',
       '> SYNCHRONIZATION ACTIVE',
-      '> PROTOCOL MONITORING'
     ],
     pages: {
       home: null,
@@ -579,3 +578,158 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Экспортируем SPA для отладки в консоли
 window.SPA = SPA;
+// === DRAGGABLE PLAYER WITH LINUX-LIKE WOBBLE EFFECT ===
+const player = document.querySelector('.audio-player-container');
+
+let isDragging = false;
+let offsetX = 0;
+let offsetY = 0;
+
+let lastX = 0;
+let lastY = 0;
+let lastTime = 0;
+
+// Элементы, по которым drag НЕ запускается
+const blockDragSelectors = [
+    ".play-btn",
+    ".progress-container",
+    ".volume-slider",
+    ".time-display"
+];
+
+function canStartDrag(e) {
+    return !blockDragSelectors.some(sel => e.target.closest(sel));
+}
+
+// Ограничиваем только по X, но НЕ ограничиваем по Y
+function clamp(x, y) {
+    const rect = player.getBoundingClientRect();
+
+    const maxX = window.innerWidth - rect.width;
+    const maxY = window.innerHeight - rect.height;
+
+    return {
+        x: Math.min(Math.max(0, x), maxX),
+        y: Math.min(Math.max(0, y), maxY)
+    };
+}
+
+
+// ========= LINUX “WOBBLE” ==========
+function applyWobble(dx, dy) {
+    // dx/dy = разница между текущей и предыдущей позицией
+    const maxTilt = 4;        // максимальный наклон
+    const maxStretch = 0.06;  // максимум растягивания 6%
+
+    // Рассчитываем скорость
+    const speed = Math.sqrt(dx*dx + dy*dy);
+
+    // Нормируем от 0 до 1
+    const power = Math.min(speed / 25, 1);
+
+    // Растяжение
+    const scaleX = 1 + maxStretch * power;
+    const scaleY = 1 - maxStretch * power;
+
+    // Наклон в сторону движения
+    const angle = maxTilt * power * (dx > 0 ? 1 : -1);
+
+    player.style.transform = `scale(${scaleX}, ${scaleY}) rotate(${angle}deg)`;
+}
+
+// Сбрасываем эффект
+function resetWobble() {
+    player.style.transition = "transform .25s ease";
+    player.style.transform = "scale(1) rotate(0deg)";
+    setTimeout(() => player.style.transition = "", 250);
+}
+
+// START
+function startDrag(cx, cy, e) {
+    if (!canStartDrag(e)) return;
+
+    const rect = player.getBoundingClientRect();
+
+    offsetX = cx - rect.left;
+    offsetY = cy - rect.top;
+
+    lastX = rect.left;
+    lastY = rect.top;
+    lastTime = performance.now();
+    player.style.bottom = "auto";
+    player.style.right = "auto";
+    player.style.position = "fixed";
+
+
+    isDragging = true;
+
+    document.body.style.userSelect = "none";
+
+    // ВАЖНО: отключаем bottom/right чтобы не тянуло вверх
+    player.style.bottom = "auto";
+    player.style.right = "auto";
+    player.style.position = "fixed";
+
+    // эффект при начале движения
+    player.style.transform = "scale(1.07)";
+}
+
+
+// MOVE
+function moveDrag(cx, cy) {
+    if (!isDragging) return;
+
+    const newX = cx - offsetX;
+    const newY = cy - offsetY;
+
+    const pos = clamp(newX, newY);
+
+    // Скорость движения
+    const now = performance.now();
+    const dt = now - lastTime || 1;
+
+    const dx = pos.x - lastX;
+    const dy = pos.y - lastY;
+
+    // Применяем wobble-анимацию
+    applyWobble(dx, dy);
+
+    player.style.left = pos.x + "px";
+    player.style.top = pos.y + "px";
+
+    lastX = pos.x;
+    lastY = pos.y;
+    lastTime = now;
+}
+
+// END
+function endDrag() {
+    if (!isDragging) return;
+
+    isDragging = false;
+    document.body.style.userSelect = "";
+
+    resetWobble();
+}
+
+// DESKTOP
+player.addEventListener("mousedown", e => {
+    startDrag(e.clientX, e.clientY, e);
+});
+document.addEventListener("mousemove", e => moveDrag(e.clientX, e.clientY));
+document.addEventListener("mouseup", endDrag);
+
+// MOBILE
+player.addEventListener("touchstart", e => {
+    const t = e.touches[0];
+    startDrag(t.clientX, t.clientY, e);
+}, { passive: true });
+
+document.addEventListener("touchmove", e => {
+    const t = e.touches[0];
+    moveDrag(t.clientX, t.clientY);
+}, { passive: true });
+
+document.addEventListener("touchend", endDrag);
+
+
