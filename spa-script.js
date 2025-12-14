@@ -129,24 +129,21 @@ const SPA = (() => {
     `;
   }
 
-  // Инициализация навигации
+  // Инициализация навигации (оптимизировано с делегированием событий)
   function initNavigation() {
-    // Клики по ссылкам в навигации
-    document.querySelectorAll('.main-nav a, .logo-link').forEach(link => {
-      link.addEventListener('click', function(e) {
+    // Используем делегирование событий для лучшей производительности
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('.main-nav a, .logo-link');
+      if (!link) return;
+      
         e.preventDefault();
-        const page = this.getAttribute('data-page') || 'home';
+      const page = link.getAttribute('data-page') || 'home';
         
         if (page !== state.currentPage) {
           loadPage(page);
-          
-          // Обновляем URL в браузере без перезагрузки
           history.pushState({ page }, '', `#${page}`);
-          
-          // Обновляем активную ссылку
           updateActiveLink(page);
         }
-      });
     });
     
     // Обработка кнопок "Назад"/"Вперед" в браузере
@@ -157,36 +154,209 @@ const SPA = (() => {
     });
   }
 
+  // Применение анимаций появления элементов
+  function applyPageAnimations() {
+    const mainContent = document.getElementById('main-content');
+    if (!mainContent) return;
+    
+    // Перетаскиваемое изображение всегда видимо (проверяем до скрытия других элементов)
+    const draggableImg = mainContent.querySelector('img[src="assets/bogdan_stepan.jpg"]');
+    
+    // Устанавливаем начальное состояние для всех элементов (кроме перетаскиваемого изображения)
+    const allAnimatedElements = mainContent.querySelectorAll('h1, h2, .btn, .card, img, .social, .terminal, .logo-gear, .typewriter, .links-gif, .subtitle, .social-list');
+    allAnimatedElements.forEach(el => {
+      // Пропускаем перетаскиваемое изображение
+      if (el === draggableImg || (el.querySelector && el.querySelector('img[src="assets/bogdan_stepan.jpg"]'))) {
+        return;
+      }
+      el.style.opacity = '0';
+      el.style.visibility = 'hidden';
+    });
+    
+    // Перетаскиваемое изображение всегда видимо
+    if (draggableImg) {
+      draggableImg.style.visibility = 'visible';
+      draggableImg.style.opacity = '1';
+      draggableImg.style.setProperty('opacity', '1', 'important');
+      draggableImg.style.setProperty('visibility', 'visible', 'important');
+    }
+    
+    // Анимация для заголовков
+    const titles = mainContent.querySelectorAll('h1, h2');
+    titles.forEach((title, index) => {
+      title.style.visibility = 'visible';
+      title.classList.add('animate-slide-top');
+      title.style.animationDelay = `${index * 0.12}s`;
+    });
+    
+    // Анимация для кнопок
+    const buttons = mainContent.querySelectorAll('.btn');
+    buttons.forEach((btn, index) => {
+      btn.style.visibility = 'visible';
+      btn.classList.add('animate-slide-bottom');
+      btn.style.animationDelay = `${0.3 + index * 0.1}s`;
+    });
+    
+    // Анимация для карточек
+    const cards = mainContent.querySelectorAll('.card');
+    cards.forEach((card, index) => {
+      card.style.visibility = 'visible';
+      const direction = index % 2 === 0 ? 'animate-slide-left' : 'animate-slide-right';
+      card.classList.add(direction);
+      card.style.animationDelay = `${0.2 + index * 0.15}s`;
+    });
+    
+    // Анимация для изображений (кроме перетаскиваемого)
+    const images = mainContent.querySelectorAll('img:not([src="assets/bogdan_stepan.jpg"])');
+    images.forEach((img, index) => {
+      img.style.visibility = 'visible';
+      img.classList.add('animate-scale');
+      img.style.animationDelay = `${0.25 + index * 0.15}s`;
+    });
+    
+    // Специальная анимация для bogdan_stepan.jpg на первоначальной позиции
+    if (draggableImg) {
+      // Убеждаемся, что изображение видимо и имеет правильные стили
+      draggableImg.style.visibility = 'visible';
+      draggableImg.style.opacity = '1';
+      draggableImg.classList.add('animate-scale');
+      draggableImg.style.animationDelay = '0.25s';
+    }
+    
+    // Анимация для социальных ссылок (с предотвращением мигания иконок)
+    const socialLinks = mainContent.querySelectorAll('.social');
+    socialLinks.forEach((link, index) => {
+      link.style.visibility = 'visible';
+      link.classList.add('animate-scale');
+      link.style.animationDelay = `${0.2 + index * 0.08}s`;
+      
+      // Предотвращаем мигание иконок - скрываем до загрузки
+      const icon = link.querySelector('i');
+      if (icon) {
+        icon.style.opacity = '0';
+        icon.style.transition = 'opacity 0.5s ease';
+        
+        // Ждем загрузки шрифтов и DOM перед показом
+        const showIcon = () => {
+          // Двойная проверка для надежности
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              icon.style.opacity = '1';
+            });
+          });
+        };
+        
+        // Проверяем загрузку шрифтов
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(() => {
+            setTimeout(showIcon, 200);
+          });
+        } else {
+          setTimeout(showIcon, 400);
+        }
+      }
+    });
+    
+    // Анимация для терминала
+    const terminal = mainContent.querySelector('.terminal');
+    if (terminal) {
+      terminal.style.visibility = 'visible';
+      terminal.classList.add('animate-slide-left');
+      terminal.style.animationDelay = '0.15s';
+    }
+    
+    // Анимация для logo-gear (но не для перетаскиваемого изображения)
+    const logoGear = mainContent.querySelector('.logo-gear');
+    if (logoGear) {
+      const hasDraggableImg = logoGear.querySelector('img[src="assets/bogdan_stepan.jpg"]');
+      if (!hasDraggableImg) {
+        logoGear.style.visibility = 'visible';
+        logoGear.classList.add('animate-slide-right');
+        logoGear.style.animationDelay = '0.2s';
+      }
+    }
+    
+    // Анимация для typewriter
+    const typewriter = mainContent.querySelector('.typewriter');
+    if (typewriter) {
+      typewriter.style.visibility = 'visible';
+      typewriter.classList.add('animate-slide-left');
+      typewriter.style.animationDelay = '0.15s';
+    }
+    
+    // Анимация для links-gif
+    const linksGif = mainContent.querySelector('.links-gif');
+    if (linksGif) {
+      linksGif.style.visibility = 'visible';
+      linksGif.classList.add('animate-scale');
+      linksGif.style.animationDelay = '0.2s';
+    }
+    
+    // Анимация для subtitle
+    const subtitle = mainContent.querySelector('.subtitle');
+    if (subtitle) {
+      subtitle.style.visibility = 'visible';
+      subtitle.classList.add('animate-slide-top');
+      subtitle.style.animationDelay = '0.18s';
+    }
+    
+    // Анимация для social-list
+    const socialList = mainContent.querySelector('.social-list');
+    if (socialList) {
+      socialList.style.visibility = 'visible';
+      socialList.classList.add('animate-slide-bottom');
+      socialList.style.animationDelay = '0.25s';
+    }
+  }
+
   // Загрузка страницы
   function loadPage(page) {
     console.log(`Загружаем страницу: ${page}`);
     
-    // Показываем анимацию загрузки
     const mainContent = document.getElementById('main-content');
-    mainContent.style.opacity = '0.5';
     
-    // Загружаем контент страницы
+    // Плавное скрытие текущего контента
+    mainContent.style.transition = 'opacity 0.2s ease-out';
+    mainContent.style.opacity = '0';
+    
+    // Загружаем контент страницы после скрытия
     setTimeout(() => {
       if (state.pages[page]) {
+        // Скрываем элементы перед загрузкой для плавного появления
+        mainContent.style.opacity = '0';
+        mainContent.style.transition = 'none';
+        
         mainContent.innerHTML = state.pages[page];
         state.currentPage = page;
         
         // Инициализируем компоненты для загруженной страницы
         initPageComponents(page);
         
-        // Показываем контент с анимацией
-        mainContent.style.opacity = '1';
-        mainContent.style.transition = 'opacity 0.3s ease';
+        // Применяем анимации появления элементов через requestAnimationFrame
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            applyPageAnimations();
+            // Плавно показываем контент
+            mainContent.style.transition = 'opacity 0.3s ease-in';
+            mainContent.style.opacity = '1';
+          });
+        });
       } else {
         console.error(`Страница "${page}" не найдена`);
         loadPage('home'); // Fallback на домашнюю страницу
       }
-    }, 50);
+    }, 200);
   }
 
-  // Обновление активной ссылки в навигации
+  // Кэш для навигационных ссылок
+  let navLinksCache = null;
+  
+  // Обновление активной ссылки в навигации (оптимизировано)
   function updateActiveLink(page) {
-    document.querySelectorAll('.main-nav a').forEach(link => {
+    if (!navLinksCache) {
+      navLinksCache = document.querySelectorAll('.main-nav a');
+    }
+    navLinksCache.forEach(link => {
       link.classList.toggle('active', link.getAttribute('data-page') === page);
     });
   }
@@ -328,6 +498,7 @@ const SPA = (() => {
       case 'home':
         initTerminal();
         initParallax();
+        initDraggableImage();
         break;
       case 'about':
         initTypewriter();
@@ -393,24 +564,38 @@ const SPA = (() => {
     setTimeout(type, 300);
   }
 
-  // Параллакс эффект
+  // Параллакс эффект (оптимизирован)
   function initParallax() {
     const hero = document.getElementById('hero');
     const gear = document.getElementById('logoGear');
     
     if (!hero || !gear) return;
     
-    hero.addEventListener('mousemove', (e) => {
+    // Проверяем, есть ли перетаскиваемое изображение в этом контейнере
+    const draggableImg = gear.querySelector('img[src="assets/bogdan_stepan.jpg"]');
+    if (draggableImg) {
+      // Отключаем parallax для контейнера с перетаскиваемым изображением
+      return;
+    }
+    
+    // Throttle для оптимизации производительности
+    let rafId = null;
+    const handleMouseMove = (e) => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
       const rect = hero.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5;
       const y = (e.clientY - rect.top) / rect.height - 0.5;
-      
       gear.style.transform = `translate3d(${x * 10}px, ${y * 8}px, 0)`;
+        rafId = null;
     });
+    };
     
+    hero.addEventListener('mousemove', handleMouseMove, { passive: true });
     hero.addEventListener('mouseleave', () => {
+      if (rafId) cancelAnimationFrame(rafId);
       gear.style.transform = 'translate3d(0, 0, 0)';
-    });
+    }, { passive: true });
   }
 
   // Вращение шестеренки
@@ -418,6 +603,11 @@ const SPA = (() => {
     const gearImages = document.querySelectorAll('.nerv-rotator img, .logo-rotator img');
     
     gearImages.forEach(img => {
+      // Пропускаем перетаскиваемое изображение
+      if (img.src.includes('bogdan_stepan.jpg') || img.classList.contains('draggable-image')) {
+        return;
+      }
+      
       img.addEventListener('mouseenter', function() {
         this.style.transition = 'transform 0.3s ease';
         this.style.transform = 'rotate(15deg)';
@@ -429,16 +619,211 @@ const SPA = (() => {
     });
   }
 
-  // Социальные ссылки
-  function initSocialLinks() {
-    document.querySelectorAll('.social').forEach(link => {
-      link.addEventListener('click', function(e) {
-        // Для внешних ссылок открываем в новой вкладке
-        if (this.getAttribute('href') && this.getAttribute('href').startsWith('http')) {
-          e.preventDefault();
-          window.open(this.getAttribute('href'), '_blank');
+  // Перетаскивание изображения bogdan_stepan.jpg
+  function initDraggableImage() {
+    // Добавляем задержку, чтобы изображение успело отрисоваться и другие эффекты инициализировались
+    setTimeout(() => {
+      const img = document.querySelector('img[src="assets/bogdan_stepan.jpg"]');
+      if (!img) {
+        console.warn('Изображение bogdan_stepan.jpg не найдено');
+        return;
+      }
+
+      // Отключаем parallax для контейнера этого изображения
+      const gearContainer = img.closest('.logo-gear');
+      if (gearContainer) {
+        gearContainer.style.transform = 'none !important';
+        gearContainer.style.pointerEvents = 'none';
+        const nervWrap = gearContainer.querySelector('.nerv-wrap');
+        if (nervWrap) {
+          nervWrap.style.transform = 'none !important';
         }
-      });
+      }
+
+      // Отключаем hover-эффекты для этого изображения
+      img.style.pointerEvents = 'auto';
+      img.onmouseenter = null;
+      img.onmouseleave = null;
+      // Удаляем все обработчики событий hover
+      const newImg = img.cloneNode(true);
+      img.parentNode.replaceChild(newImg, img);
+      const imgElement = newImg;
+
+      // Добавляем класс для стилизации
+      imgElement.classList.add('draggable-image');
+      imgElement.style.cursor = 'grab';
+      imgElement.style.zIndex = '100';
+      imgElement.style.willChange = 'transform';
+      imgElement.style.transition = 'none'; // Отключаем все переходы
+      
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let translateX = 0;
+      let translateY = 0;
+      let animationFrameId = null;
+      let lastX = 0;
+      let lastY = 0;
+      let lastTime = 0;
+
+      // Всегда начинаем с исходной позиции (не загружаем из localStorage)
+      translateX = 0;
+      translateY = 0;
+      
+      // Очищаем старую позицию из localStorage при инициализации
+      localStorage.removeItem('bogdan_stepan_position');
+      
+      // Убеждаемся, что изображение видимо
+      imgElement.style.setProperty('opacity', '1', 'important');
+      imgElement.style.setProperty('visibility', 'visible', 'important');
+      
+      // Применяем анимацию появления
+      imgElement.classList.add('animate-scale');
+      imgElement.style.animationDelay = '0.3s';
+      
+      // Устанавливаем исходную позицию (без transform)
+      imgElement.style.setProperty('transform', 'translate(0, 0)', 'important');
+
+      // Wobble эффект (как у плеера)
+      function applyWobble(dx, dy) {
+        const maxTilt = 3;        // максимальный наклон (меньше чем у плеера для изображения)
+        const maxStretch = 0.04;  // максимум растягивания 4%
+        const speed = Math.sqrt(dx * dx + dy * dy);
+        const power = Math.min(speed / 20, 1);
+        const scaleX = 1 + maxStretch * power;
+        const scaleY = 1 - maxStretch * power;
+        const angle = maxTilt * power * (dx > 0 ? 1 : -1);
+        return `translate(${translateX}px, ${translateY}px) scale(${scaleX}, ${scaleY}) rotate(${angle}deg)`;
+      }
+
+      function resetWobble() {
+        imgElement.style.setProperty('transition', 'transform 0.25s ease', 'important');
+        imgElement.style.setProperty('transform', `translate(${translateX}px, ${translateY}px) scale(1) rotate(0deg)`, 'important');
+        setTimeout(() => {
+          imgElement.style.setProperty('transition', 'none', 'important');
+        }, 250);
+      }
+
+      function updateTransform(applyWobbleEffect = false) {
+        let transformValue;
+        if (applyWobbleEffect && isDragging) {
+          const now = performance.now();
+          const dx = translateX - lastX;
+          const dy = translateY - lastY;
+          transformValue = applyWobble(dx, dy);
+          lastX = translateX;
+          lastY = translateY;
+          lastTime = now;
+        } else {
+          transformValue = `translate(${translateX}px, ${translateY}px)`;
+        }
+        imgElement.style.setProperty('transform', transformValue, 'important');
+        // НЕ сохраняем позицию в localStorage - при перезагрузке возвращаемся на исходное место
+      }
+
+      // Применяем позицию еще раз через небольшую задержку для защиты от перезаписи
+      setTimeout(() => {
+        updateTransform();
+      }, 100);
+
+      function startDrag(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = true;
+        
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        
+        // Сохраняем начальную позицию курсора и текущий transform
+        startX = clientX;
+        startY = clientY;
+        
+        // Получаем текущий transform
+        const current = getCurrentTransform();
+        translateX = current.x;
+        translateY = current.y;
+        lastX = translateX;
+        lastY = translateY;
+        lastTime = performance.now();
+        
+        imgElement.style.cursor = 'grabbing';
+        imgElement.style.setProperty('transition', 'none', 'important');
+        document.body.style.userSelect = 'none';
+      }
+
+      function moveDrag(e) {
+        if (!isDragging) return;
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        
+        // Вычисляем смещение от начальной точки
+        const deltaX = clientX - startX;
+        const deltaY = clientY - startY;
+        
+        // Добавляем смещение к текущей позиции
+        translateX += deltaX;
+        translateY += deltaY;
+        
+        // Обновляем начальную позицию для следующего кадра
+        startX = clientX;
+        startY = clientY;
+        
+        // Плавно обновляем через requestAnimationFrame с wobble эффектом
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+        
+        animationFrameId = requestAnimationFrame(() => {
+          updateTransform(true); // Применяем wobble эффект
+        });
+      }
+
+      function endDrag() {
+        if (!isDragging) return;
+        
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+        
+        isDragging = false;
+        imgElement.style.cursor = 'grab';
+        // Сбрасываем wobble эффект с плавной анимацией
+        resetWobble();
+        document.body.style.userSelect = '';
+      }
+
+      // События для мыши
+      imgElement.addEventListener('mousedown', startDrag);
+      document.addEventListener('mousemove', moveDrag);
+      document.addEventListener('mouseup', endDrag);
+
+      // События для сенсорных экранов
+      imgElement.addEventListener('touchstart', startDrag, { passive: false });
+      document.addEventListener('touchmove', moveDrag, { passive: false });
+      document.addEventListener('touchend', endDrag);
+    }, 500); // Увеличена задержка для рендеринга
+  }
+
+  // Социальные ссылки (оптимизировано с делегированием событий)
+  let socialLinksInitialized = false;
+  function initSocialLinks() {
+    if (socialLinksInitialized) return;
+    socialLinksInitialized = true;
+    
+    // Используем делегирование событий
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('.social');
+      if (!link) return;
+      
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('http')) {
+          e.preventDefault();
+        window.open(href, '_blank', 'noopener,noreferrer');
+        }
     });
   }
 
@@ -455,18 +840,25 @@ const SPA = (() => {
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
   }
 
-  // Обработка кнопок
+  // Обработка кнопок (оптимизировано с делегированием событий)
+  // Используем единый обработчик для всех кнопок через делегирование
+  let buttonsInitialized = false;
   function initButtons() {
-    document.querySelectorAll('.btn').forEach(button => {
-      button.addEventListener('click', function(e) {
-        if (this.getAttribute('href') === '#') {
+    if (buttonsInitialized) return;
+    buttonsInitialized = true;
+    
+    // Используем делегирование событий для лучшей производительности
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.btn');
+      if (!btn) return;
+      
+      if (btn.getAttribute('href') === '#') {
           e.preventDefault();
-          const page = this.getAttribute('data-page') || 'home';
+        const page = btn.getAttribute('data-page') || 'home';
           loadPage(page);
           history.pushState({ page }, '', `#${page}`);
           updateActiveLink(page);
         }
-      });
     });
   }
 
@@ -476,7 +868,7 @@ const SPA = (() => {
     initMatrixBackground();
   }
 
-  // Matrix фон (из оригинального скрипта)
+  // Matrix фон (оптимизирован)
   function initMatrixBackground() {
     if (window.innerWidth < 600) return;
     
@@ -484,11 +876,16 @@ const SPA = (() => {
     canvas.id = 'matrixCanvas';
     document.body.appendChild(canvas);
     
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false }); // Отключаем альфа-канал для производительности
     let width, height;
     let fontSize = 14;
     let columns;
     let drops = [];
+    let animationId = null;
+    
+    // Кэшируем строку для производительности
+    const chars = '01';
+    const charLength = chars.length;
     
     function resize() {
       width = canvas.width = window.innerWidth;
@@ -498,26 +895,39 @@ const SPA = (() => {
       drops = new Array(columns).fill(1);
     }
     
-    const chars = '01';
-    
     function draw() {
+      // Используем более эффективный способ очистки
       ctx.fillStyle = 'rgba(0, 0, 0, 0.06)';
       ctx.fillRect(0, 0, width, height);
       ctx.fillStyle = 'rgba(0, 255, 120, 0.9)';
-      ctx.font = fontSize + 'px monospace';
+      ctx.font = `${fontSize}px monospace`;
       
+      // Оптимизированный цикл
       for (let i = 0; i < columns; i++) {
-        const text = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > height && Math.random() > 0.975) drops[i] = 0;
+        const y = drops[i] * fontSize;
+        const charIndex = Math.floor(Math.random() * charLength);
+        ctx.fillText(chars[charIndex], i * fontSize, y);
+        if (y > height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
         drops[i]++;
       }
       
-      requestAnimationFrame(draw);
+      animationId = requestAnimationFrame(draw);
     }
     
     resize();
-    window.addEventListener('resize', resize);
+    // Debounce для resize
+    let resizeTimeout;
+    const handleResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (animationId) cancelAnimationFrame(animationId);
+        resize();
+        draw();
+      }, 150);
+    };
+    window.addEventListener('resize', handleResize, { passive: true });
     draw();
   }
 
@@ -558,6 +968,8 @@ const SPA = (() => {
 
   return {
     init,
+    loadPage,
+    updateActiveLink,
     toggleMusic,
     getCurrentPage,
     isMusicPlaying
@@ -732,42 +1144,5 @@ document.addEventListener("touchmove", e => {
 
 document.addEventListener("touchend", endDrag);
 
-// === АВТО-ПРИЖАТИЕ ФУТЕРА ДЛЯ СПА ===
-
-// Эта функция заставляет футер опускаться в самый низ окна
-function adjustFooter() {
-    const main = document.getElementById("main-content");
-
-    // доп. защита: если контента мало — растягиваем блок
-    main.style.minHeight = "calc(100vh - 120px)";
-}
-
-// Событие, которое SPA вызывает каждый раз при загрузке новой страницы
-document.addEventListener("spa-page-loaded", adjustFooter);
-
-// === НАСТОЯЩИЙ FIX: автоматическая обёртка в .page-content ===
-
-// ПАТЧИМ твою функцию загрузки страниц
-// (если в spa-script.js у тебя есть loadPage(pageName), то мы её перехватываем)
-const originalLoadPage = window.loadPage;
-
-if (originalLoadPage) {
-    window.loadPage = async function(page) {
-        await originalLoadPage(page);
-
-        // оборачиваем загруженный HTML в .page-content
-        const main = document.getElementById("main-content");
-        if (!main.querySelector(".page-content")) {
-            const wrapper = document.createElement("div");
-            wrapper.className = "page-content";
-            wrapper.innerHTML = main.innerHTML;
-            main.innerHTML = "";
-            main.appendChild(wrapper);
-        }
-
-        // вызываем событие, чтобы футер встал на место
-        document.dispatchEvent(new Event("spa-page-loaded"));
-    };
-}
 
 
